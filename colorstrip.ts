@@ -112,6 +112,22 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
     // To sample colors looking different from one another, the luminosity
     // is alternatively low and high
     let baseHue = Math.floor(360 * Math.random())
+
+    // A boost value above one increases the amplitude of the variation
+    // around the baseHue. This helps diversify the color when the hue
+    // is over-represented in the chromatic circle.
+    let boost = 1
+    if (100 <= baseHue && baseHue < 140) {
+        // green
+        boost = 2.4
+    } else if (180 <= baseHue && baseHue < 240) {
+        // blue
+        boost = 3.2
+    } else if (300 <= baseHue) {
+        // red
+        boost = 1.8
+    }
+
     let baseLuminosity: number
     let lumSpacing: number
     let saturation: number
@@ -161,7 +177,7 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
     let luminosityArray = [baseLuminosity + lumSpacing, baseLuminosity - lumSpacing]
     let quadArray = Array.from({ length: config.stripCount }).map((_, k) => {
         let relativeK = k - Math.floor(config.stripCount / 2)
-        let hue = (baseHue + config.diversityRatio * 360 * relativeK / config.stripCount) % 360
+        let hue = (baseHue + boost * config.diversityRatio * 360 * relativeK / config.stripCount) % 360
         let color = hslToHex(hue, saturation, luminosityArray[k % 2])
         console.log('color', color, hue)
 
