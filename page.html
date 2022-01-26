@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MCA's ColorStrip</title>
+</head>
+<body>
+    <canvas></canvas>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+    <script type="module">
+        import { ColorStrip } from "./colorstrip.ts"
+
+        let theme = location.hash.slice(1)
+        document.title = theme
+
+        let canvasElement = document.querySelector("canvas")
+        let resizeCanvas = () => {
+            canvasElement.width = window.innerWidth
+            canvasElement.height = window.innerHeight
+        }
+        resizeCanvas()
+
+        let radius = () => (window.innerWidth ** 2 + window.innerHeight ** 2) ** 0.5 * 1.1 / 2
+        let strip = ColorStrip(canvasElement, radius(), {
+            stripCount: 12,
+            diversityRatio: 3 / 12,
+            theme,
+        })
+
+        window.addEventListener('resize', () => {
+            resizeCanvas()
+            strip.setRadius(radius())
+        })
+
+        let animate = () => {
+            let speedFactor = 0.2
+            strip.update(speedFactor)
+            strip.draw()
+        }
+        let render = () => {
+            requestAnimationFrame(render)
+            animate()
+        }
+        render()
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "m",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel src/page.html"
+  },
+  "devDependencies": {
+    "parcel": "^2.2.1",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5"
+  }
+}
