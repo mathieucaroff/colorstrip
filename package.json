@@ -1,11 +1,10 @@
 {
-  "name": "m",
+  "name": "colorstrip",
   "version": "1.0.0",
-  "main": "index.js",
   "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
   "license": "MIT",
   "scripts": {
-    "start": "parcel src/page.html"
+    "build": "parcel build src/colorstrip.html --public-url colorstrip.d"
   },
   "devDependencies": {
     "parcel": "^2.2.1",
