@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MCA's ColorStrip</title>
+    <title>Colorstrip</title>
 </head>
 <body>
     <canvas></canvas>
@@ -16,10 +16,12 @@
         }
     </style>
     <script type="module">
-        import { ColorStrip } from "./colorstrip.ts"
+        import { ColorStrip, themeArray } from "./colorstrip.ts"
+
+        console.log("theme", themeArray.map(t => "#"+t))
 
         let theme = location.hash.slice(1)
-        document.title = theme
+        document.title += ' ' + theme
 
         let canvasElement = document.querySelector("canvas")
         let resizeCanvas = () => {

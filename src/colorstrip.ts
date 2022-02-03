@@ -11,6 +11,8 @@ export interface ColorStripConfig {
     theme: 'light' | 'pastelle' | 'twilight' | 'dark'
 }
 
+export let themeArray: ColorStripConfig["theme"][] = ['light', 'pastelle', 'twilight', 'dark']
+
 // A side consist of two values with their first and second degree derivatives:
 // - theta (tx, tv, ta)
 // - sigma (sx, sv, sa)
