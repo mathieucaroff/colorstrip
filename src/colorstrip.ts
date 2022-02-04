@@ -148,15 +148,15 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
         lumSpacing = 0.06
         saturation = 1
         backgroundColor = '#111'
-    } else if (config.theme === 'pastelle') {
-        baseLuminosity = 0.60
-        lumSpacing = 0.10
-        saturation = .7
-        backgroundColor = '#FFF'
-    } else { // light
+    } else if (config.theme === 'light') {
         baseLuminosity = 0.45
         lumSpacing = 0.04
         saturation = 1
+        backgroundColor = '#FFF'
+    } else { // pastelle
+        baseLuminosity = 0.60
+        lumSpacing = 0.10
+        saturation = .7
         backgroundColor = '#FFF'
     }
 
