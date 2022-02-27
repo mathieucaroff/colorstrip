@@ -8,10 +8,10 @@ export interface ColorStripConfig {
     // theme -- background selection and luminosity/saturation adjustment
     // Note: a decent handling of theme would require taking saturation into
     // account whene generating the color palette
-    theme: 'light' | 'pastelle' | 'twilight' | 'dark'
+    theme: "light" | "pastelle" | "twilight" | "dark"
 }
 
-export let themeArray: ColorStripConfig["theme"][] = ['light', 'pastelle', 'twilight', 'dark']
+export let themeArray: ColorStripConfig["theme"][] = ["light", "pastelle", "twilight", "dark"]
 
 // A side consist of two values with their first and second degree derivatives:
 // - theta (tx, tv, ta)
@@ -86,20 +86,27 @@ class Quad {
 let hslToHex = (hue, sat, lum) => {
     // https://stackoverflow.com/a/44134328/9878263
     let a = sat * Math.min(lum, 1 - lum)
-    let f = n => {
-        let k = (n + hue / 30) % 12;
+    let f = (n) => {
+        let k = (n + hue / 30) % 12
         let color = lum - a * Math.max(Math.min(k - 3, 9 - k, 1), -1)
-        return Math.round(255 * color).toString(16).padStart(2, '0')   // convert to Hex and prefix "0" if needed
+        return Math.round(255 * color)
+            .toString(16)
+            .padStart(2, "0") // convert to Hex and prefix "0" if needed
     }
     return `#${f(0)}${f(8)}${f(4)}`
 }
 
-let createRandomSide = (): Side => {
+let createRandomSide = (other?: Side): Side => {
+    let tx = Math.random() * 2 * Math.PI // theta position
+    if (other) {
+        tx = (other.tx + (1 + 0.5 + Math.random() / 2) * Math.PI) % Math.PI
+    }
+
     return new Side({
-        tx: Math.random() * 2 * Math.PI, // theta position
+        tx,
         tv: 0, // theta speed
         ta: 0, // theta acceleration
-        sx: (2 * Math.random() - 1) * Math.PI / 6, // sigma position
+        sx: ((2 * Math.random() - 1) * Math.PI) / 6, // sigma position
         sv: 0, // sigma speed
         sa: 0, // sigma acceleration
     })
@@ -121,9 +128,13 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
     let hueBoost = 1
     console.log({ baseHue })
     if (80 <= baseHue && baseHue < 140) {
-        // green
+        // low green
         hueBoost = 2.4
-        console.log("**green**")
+        console.log("**low green**")
+    } else if (140 <= baseHue && baseHue < 180) {
+        // high green
+        hueBoost = 2.2
+        console.log("**high green**")
     } else if (180 <= baseHue && baseHue < 260) {
         // blue
         hueBoost = 2
@@ -138,26 +149,27 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
     let lumSpacing: number
     let saturation: number
     let backgroundColor: string
-    if (config.theme === 'dark') {
+    if (config.theme === "dark") {
         baseLuminosity = 0.1 + 0.2 * Math.random()
         lumSpacing = 0.06
-        saturation = .4
-        backgroundColor = '#000'
-    } else if (config.theme === 'twilight') {
+        saturation = 0.4
+        backgroundColor = "#000"
+    } else if (config.theme === "twilight") {
         baseLuminosity = 0.15 + 0.2 * Math.random()
         lumSpacing = 0.06
         saturation = 1
-        backgroundColor = '#111'
-    } else if (config.theme === 'light') {
+        backgroundColor = "#111"
+    } else if (config.theme === "light") {
         baseLuminosity = 0.45
         lumSpacing = 0.04
         saturation = 1
-        backgroundColor = '#FFF'
-    } else { // pastelle
-        baseLuminosity = 0.60
-        lumSpacing = 0.10
-        saturation = .7
-        backgroundColor = '#FFF'
+        backgroundColor = "#FFF"
+    } else {
+        // pastelle
+        baseLuminosity = 0.6
+        lumSpacing = 0.1
+        saturation = 0.7
+        backgroundColor = "#FFF"
     }
 
     let clear = () => {
@@ -165,7 +177,7 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
         ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
 
-    let center = () => ([canvas.width / 2, canvas.height / 2])
+    let center = () => [canvas.width / 2, canvas.height / 2]
 
     let fillPath = (pointArray: [number, number][]) => {
         let region = new Path2D()
@@ -174,8 +186,8 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
         pointArray.slice(1).forEach((point) => {
             region.lineTo(...point)
         })
-        region.closePath();
-        ctx.fill(region, 'evenodd');
+        region.closePath()
+        ctx.fill(region, "evenodd")
     }
 
     clear()
@@ -183,13 +195,15 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
     let luminosityArray = [baseLuminosity + lumSpacing, baseLuminosity - lumSpacing]
     let quadArray = Array.from({ length: config.stripCount }).map((_, k) => {
         let relativeK = k - Math.floor(config.stripCount / 2)
-        let hue = (baseHue + hueBoost * config.diversityRatio * 360 * relativeK / config.stripCount) % 360
+        let hue = (baseHue + (hueBoost * config.diversityRatio * 360 * relativeK) / config.stripCount) % 360
         let color = hslToHex(hue, saturation, luminosityArray[k % 2])
-        console.log('color', color, hue)
+        console.log("color", color, hue)
+
+        let a = createRandomSide()
 
         return new Quad({
-            a: createRandomSide(),
-            b: createRandomSide(),
+            a,
+            b: createRandomSide(a),
             color,
         })
     })
@@ -207,14 +221,16 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
             let c = center()
             quadArray.forEach((quad) => {
                 ctx.fillStyle = quad.color
-                fillPath(quad.trigonometry().map((point) => {
-                    return add(scale(point, radius), c) as [number, number]
-                }))
+                fillPath(
+                    quad.trigonometry().map((point) => {
+                        return add(scale(point, radius), c) as [number, number]
+                    }),
+                )
             })
         },
         setRadius: (radiusValue: number) => {
             radius = radiusValue
-        }
+        },
     }
 
     return me

@@ -32,7 +32,7 @@
 
         let radius = () => (window.innerWidth ** 2 + window.innerHeight ** 2) ** 0.5 * 1.1 / 2
         let strip = ColorStrip(canvasElement, radius(), {
-            stripCount: 12,
+            stripCount: 10,
             diversityRatio: 3 / 12,
             theme,
         })
@@ -42,9 +42,11 @@
             strip.setRadius(radius())
         })
 
+        let lastTime = performance.now()
         let animate = () => {
-            let speedFactor = 0.2
-            strip.update(speedFactor)
+            let time = performance.now()
+            strip.update((time-lastTime)*0.02)
+            lastTime = time
             strip.draw()
         }
         let render = () => {
