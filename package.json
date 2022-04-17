@@ -4,7 +4,9 @@
   "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build src/colorstrip.html --public-url colorstrip.d"
+    "build": "parcel build src/index.html --dist-dir public",
+    "mcabuild": "parcel build src/index.html --public-url colorstrip.d",
+    "serve": "parcel serve src/index.html"
   },
   "devDependencies": {
     "parcel": "^2.2.1",
