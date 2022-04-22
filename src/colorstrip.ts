@@ -112,7 +112,7 @@ let createRandomSide = (other?: Side): Side => {
     })
 }
 
-export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: ColorStripConfig) => {
+export let createColorStrip = (canvas: HTMLCanvasElement, radius: number, config: ColorStripConfig) => {
     let ctx = canvas.getContext("2d")
 
     // To sample a set of harmonious colors, the diversityRatio can be
@@ -235,6 +235,8 @@ export let ColorStrip = (canvas: HTMLCanvasElement, radius: number, config: Colo
 
     return me
 }
+
+export type ColorStrip = ReturnType<typeof createColorStrip>
 
 let cossin = (theta: number): [number, number] => {
     return [Math.cos(theta), Math.sin(theta)]

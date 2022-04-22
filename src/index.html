@@ -15,45 +15,6 @@
             display: block;
         }
     </style>
-    <script type="module">
-        import { ColorStrip, themeArray } from "./colorstrip.ts"
-
-        console.log("theme", themeArray.map(t => "#"+t))
-
-        let theme = location.hash.slice(1)
-        document.title += ' ' + theme
-
-        let canvasElement = document.querySelector("canvas")
-        let resizeCanvas = () => {
-            canvasElement.width = window.innerWidth
-            canvasElement.height = window.innerHeight
-        }
-        resizeCanvas()
-
-        let radius = () => (window.innerWidth ** 2 + window.innerHeight ** 2) ** 0.5 * 1.1 / 2
-        let strip = ColorStrip(canvasElement, radius(), {
-            stripCount: 10,
-            diversityRatio: 3 / 12,
-            theme,
-        })
-
-        window.addEventListener('resize', () => {
-            resizeCanvas()
-            strip.setRadius(radius())
-        })
-
-        let lastTime = performance.now()
-        let animate = () => {
-            let time = performance.now()
-            strip.update((time-lastTime)*0.02)
-            lastTime = time
-            strip.draw()
-        }
-        let render = () => {
-            requestAnimationFrame(render)
-            animate()
-        }
-        render()
-    </script>
+    <script type="module" src="main.ts"></script>
 </body>
 </html>
