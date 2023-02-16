@@ -1,4 +1,6 @@
-import { createColorStrip, themeArray } from "./colorstrip"
+import { createColorStrip } from "./colorstrip"
+import { themeArray } from "./lib/palette"
+import { default as seedrandom } from "seedrandom"
 
 function main() {
     console.log(
@@ -6,18 +8,20 @@ function main() {
         themeArray.map((t) => "#" + t),
     )
 
-    let canvasElement = document.querySelector("canvas")
+    const config = { seed: "" }
+
+    let random = seedrandom(config.seed)
+
+    let canvas = document.querySelector("canvas")!
     let resizeCanvas = () => {
-        canvasElement.width = window.innerWidth
-        canvasElement.height = window.innerHeight
+        canvas.width = window.innerWidth
+        canvas.height = window.innerHeight
     }
     resizeCanvas()
 
-    let radius = () => ((window.innerWidth ** 2 + window.innerHeight ** 2) ** 0.5 * 1.1) / 2
-
     let theme
     let setupTheme = () => {
-        theme = location.hash.slice(1)
+        theme = location.hash.slice(1) || "pastelle"
         document.title = "Colorstrip"
         if (theme.length > 0) {
             document.title += " " + theme
@@ -27,17 +31,17 @@ function main() {
 
     let strip
     let setupColorStrip = () => {
-        strip = createColorStrip(canvasElement, radius(), {
+        strip = createColorStrip(canvas, {
             stripCount: 10,
             diversityRatio: 3 / 12,
             theme,
+            random,
         })
     }
     setupColorStrip()
 
     window.addEventListener("resize", () => {
         resizeCanvas()
-        strip.setRadius(radius())
     })
 
     window.addEventListener("hashchange", () => {
@@ -50,7 +54,8 @@ function main() {
         let time = performance.now()
         strip.update((time - lastTime) * 0.02)
         lastTime = time
-        strip.draw()
+        let radius = ((canvas.width ** 2 + canvas.height ** 2) ** 0.5 * 1.1) / 2
+        strip.draw(radius)
     }
 
     let render = () => {
