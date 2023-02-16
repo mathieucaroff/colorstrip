@@ -1,19 +1,20 @@
 // A ColorStrip, created from a ColorStripConfig is a set of Quad-s ; each Quad
 // consisting of two Side-s.
 
-import { createPalette, PaletteConfig } from "./lib/palette"
+import { createPalette, PaletteConfig, Theme } from "./lib/palette"
 import { createStripCircle } from "./stripCircle"
 
 type RandomFunction = () => number
 
 export interface ColorStripConfig {
     stripCount: number
+    speedFactor: number
     // between 0 and 1 -- set the amount of diversity of color -- 0.3 is a good start
     diversityRatio: PaletteConfig["diversityRatio"]
     // theme -- background selection and luminosity/saturation adjustment
     // Note: a decent handling of theme would require taking saturation into
     // account whene generating the color palette
-    theme: PaletteConfig["theme"]
+    theme: Theme
     // random -- the source of randomness used for the strip and palette generation,
     // a function which produces numbers between 0 included and 1 excluded
     random: RandomFunction
@@ -53,8 +54,8 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
     clear()
 
     let me = {
-        update: (speedFactor: number) => {
-            stripCircle.update(speedFactor)
+        update: (timeIncrement: number) => {
+            stripCircle.update(timeIncrement)
         },
         draw: (radius: number) => {
             clear()

@@ -6,6 +6,7 @@ type RandomFunction = () => number
 export interface StripCircleParam {
     random: RandomFunction
     stripCount: number
+    speedFactor: number
 }
 
 // A side consist of two values with their first and second degree derivatives:
@@ -14,6 +15,9 @@ export interface StripCircleParam {
 //
 // Both values are angles in radians
 class Side {
+    // speedFactor
+    speedFactor: number
+
     // theta position, between 0 and 2pi
     tx: number
     // theta speed
@@ -31,19 +35,19 @@ class Side {
         Object.assign(this, data)
     }
 
-    randomUpdate(random: RandomFunction, speedFactor: number) {
-        this.ta += (random() - 0.5) * 0.001
+    randomUpdate(random: RandomFunction, timeIncrement: number) {
+        this.ta += (random() - 0.5) * 0.001 * this.speedFactor
         this.ta *= 0.999
         this.tv += this.ta
         this.tv *= 0.2
-        this.tx += this.tv * speedFactor
+        this.tx += this.tv * timeIncrement
         this.tx = (this.tx + 2 * Math.PI) % (2 * Math.PI)
 
-        this.sa += (random() - 0.5) * 0.001
+        this.sa += (random() - 0.5) * 0.001 * this.speedFactor
         this.sa *= 0.999
         this.sv += this.sa
         this.sv *= 0.04
-        this.sx += this.sv * speedFactor
+        this.sx += this.sv * timeIncrement
         this.sx = clamp(this.sx, -Math.PI / 24, Math.PI / 24)
     }
 
@@ -60,7 +64,6 @@ class Side {
 class Quad {
     a: Side
     b: Side
-    color: string
 
     constructor(data: Partial<Quad> = {}) {
         Object.assign(this, data)
@@ -71,17 +74,18 @@ class Quad {
     }
 }
 
-let createRandomSide = (random: RandomFunction, other?: Side): Side => {
+let createRandomSide = (random: RandomFunction, speedFactor: number, other?: Side): Side => {
     let tx = random() * 2 * Math.PI // theta position
     if (other) {
         tx = (other.tx + (1 + 0.5 + random() / 2) * Math.PI) % Math.PI
     }
 
     return new Side({
+        speedFactor,
         tx,
         tv: 0, // theta speed
         ta: 0, // theta acceleration
-        sx: ((2 * Math.random() - 1) * Math.PI) / 6, // sigma position
+        sx: ((2 * random() - 1) * Math.PI) / 6, // sigma position
         sv: 0, // sigma speed
         sa: 0, // sigma acceleration
     })
@@ -89,16 +93,16 @@ let createRandomSide = (random: RandomFunction, other?: Side): Side => {
 
 export let createStripCircle = (param: StripCircleParam) => {
     let quadArray = Array.from({ length: param.stripCount }).map((_, k) => {
-        let a = createRandomSide(param.random)
+        let a = createRandomSide(param.random, param.speedFactor)
 
-        return new Quad({ a, b: createRandomSide(param.random, a) })
+        return new Quad({ a, b: createRandomSide(param.random, param.speedFactor, a) })
     })
 
     let me = {
-        update: (speedFactor: number) => {
+        update: (timeIncrement: number) => {
             quadArray.forEach((quad) => {
-                quad.a.randomUpdate(param.random, speedFactor)
-                quad.b.randomUpdate(param.random, speedFactor)
+                quad.a.randomUpdate(param.random, timeIncrement)
+                quad.b.randomUpdate(param.random, timeIncrement)
             })
         },
         getPathList: (center: [number, number], radius: number) => {

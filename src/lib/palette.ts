@@ -19,7 +19,9 @@ export interface PaletteConfig {
     random: RandomFunction
 }
 
-export let themeArray: PaletteConfig["theme"][] = ["light", "pastelle", "twilight", "dark"]
+export type Theme = PaletteConfig["theme"]
+
+export let themeArray: Theme[] = ["light", "pastelle", "twilight", "dark"]
 
 /**
  * hslToHex
@@ -47,7 +49,7 @@ export let createPalette = (config: PaletteConfig) => {
     //
     // To sample colors looking different from one another, the luminosity
     // is alternatively low and high
-    let baseHue = Math.floor(360 * Math.random())
+    let baseHue = Math.floor(360 * config.random())
 
     // A hueBoost value above one increases the amplitude of the variation
     // around the baseHue. This helps diversify the color when the hue
@@ -77,12 +79,12 @@ export let createPalette = (config: PaletteConfig) => {
     let saturation: number
     let backgroundColor: string
     if (config.theme === "dark") {
-        baseLuminosity = 0.1 + 0.2 * Math.random()
+        baseLuminosity = 0.1 + 0.2 * config.random()
         lumSpacing = 0.06
         saturation = 0.4
         backgroundColor = "#000"
     } else if (config.theme === "twilight") {
-        baseLuminosity = 0.15 + 0.2 * Math.random()
+        baseLuminosity = 0.15 + 0.2 * config.random()
         lumSpacing = 0.06
         saturation = 1
         backgroundColor = "#111"
@@ -103,7 +105,9 @@ export let createPalette = (config: PaletteConfig) => {
     let luminosityDuet = [baseLuminosity + lumSpacing, baseLuminosity - lumSpacing]
     let colorArray = Array.from({ length: config.colorCount }).map((_, k) => {
         let relativeK = k - Math.floor(config.colorCount / 2)
-        let hue = (baseHue + (hueBoost * config.diversityRatio * 360 * relativeK) / config.colorCount) % 360
+        let hue =
+            (baseHue + (hueBoost * config.diversityRatio * 360 * relativeK) / config.colorCount) %
+            360
         let color = hslToHex(hue, saturation, luminosityDuet[k % 2])
         return color
     })
