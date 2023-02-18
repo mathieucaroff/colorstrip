@@ -2,6 +2,7 @@
 // consisting of two Side-s.
 
 import { createPalette, PaletteConfig, Theme } from "./lib/palette"
+import { seedRandom } from "./lib/seedRandom"
 import { createStripCircle } from "./stripCircle"
 
 type RandomFunction = () => number
@@ -15,9 +16,12 @@ export interface ColorStripConfig {
     // Note: a decent handling of theme would require taking saturation into
     // account whene generating the color palette
     theme: Theme
-    // random -- the source of randomness used for the strip and palette generation,
+    // seeds -- the source of randomness used for the strip and palette generation,
     // a function which produces numbers between 0 included and 1 excluded
-    random: RandomFunction
+    stripCircleSeed: number
+    paletteSeed: number
+    // baseHue -- between 0 and 360
+    baseHue?: number
 }
 
 export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConfig) => {
@@ -27,13 +31,14 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
         colorCount: config.stripCount,
         diversityRatio: config.diversityRatio,
         theme: config.theme,
-        random: config.random,
+        random: seedRandom(config.paletteSeed),
+        baseHue: config.baseHue,
     })
 
     console.log("hue", baseHue, `(${hueComment})`)
     console.log("colors", colorArray)
 
-    let stripCircle = createStripCircle(config)
+    let stripCircle = createStripCircle({ ...config, random: seedRandom(config.stripCircleSeed) })
 
     let clear = () => {
         ctx.fillStyle = backgroundColor

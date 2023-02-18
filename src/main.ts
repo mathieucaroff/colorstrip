@@ -1,6 +1,5 @@
 import { createColorStrip } from "./colorstrip"
 import { Theme, themeArray } from "./lib/palette"
-import { default as seedrandom } from "seedrandom"
 import { resolveSearchAndHash } from "./lib/urlParameter"
 
 interface MainConfig {
@@ -8,9 +7,12 @@ interface MainConfig {
     radiusFactor: number
     secondaryRadiusFactor: number
     seed: number
+    paletteSeed: number
+    stripCircleSeed: number
     speedFactor: number
     stripCount: number
     theme: Theme
+    hue: number | undefined
 }
 
 function randomSeed() {
@@ -24,8 +26,11 @@ function getConfig() {
         secondaryRadiusFactor: ({ radiusFactor }) => radiusFactor(),
         speedFactor: () => 1,
         seed: () => randomSeed(),
+        paletteSeed: ({ seed }) => seed(),
+        stripCircleSeed: ({ seed }) => seed(),
         stripCount: () => 10,
         theme: () => "pastelle",
+        hue: () => undefined,
     })
 }
 
@@ -41,8 +46,6 @@ function main() {
 
     console.log("config", config)
 
-    let random = seedrandom(config.seed)
-
     let canvas = document.querySelector("canvas")!
     let resizeCanvas = () => {
         canvas.width = window.innerWidth
@@ -53,11 +56,8 @@ function main() {
     let strip
     let setupColorStrip = () => {
         strip = createColorStrip(canvas, {
-            stripCount: config.stripCount,
-            diversityRatio: config.diversityRatio,
-            theme: config.theme,
-            random,
-            speedFactor: config.speedFactor,
+            ...config,
+            baseHue: config.hue,
         })
     }
     setupColorStrip()

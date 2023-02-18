@@ -17,6 +17,9 @@ export interface PaletteConfig {
     // random -- the source of randomness used for the palette generation,
     // a function which produces numbers between 0 included and 1 excluded
     random: RandomFunction
+    // baseHue -- a number between 0 and 360 used as the center of the generated
+    // palette
+    baseHue?: number
 }
 
 export type Theme = PaletteConfig["theme"]
@@ -50,6 +53,7 @@ export let createPalette = (config: PaletteConfig) => {
     // To sample colors looking different from one another, the luminosity
     // is alternatively low and high
     let baseHue = Math.floor(360 * config.random())
+    baseHue = config.baseHue ?? baseHue
 
     // A hueBoost value above one increases the amplitude of the variation
     // around the baseHue. This helps diversify the color when the hue
