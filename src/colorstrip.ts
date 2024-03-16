@@ -2,7 +2,7 @@
 // consisting of two Side-s.
 
 import { createPalette, PaletteConfig, Theme } from "./lib/palette"
-import { seedRandom } from "./lib/seedRandom"
+import { default as seedRandom } from "seedrandom"
 import { createStripCircle } from "./stripCircle"
 
 export interface ColorStripConfig {
@@ -78,13 +78,15 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
         draw: (time: number, radius?: number) => {
             if (radius === undefined) {
                 let factor = config.radiusFactor
-                if (config.secondaryRadiusFactor !== config.radiusFactor){
+                if (config.secondaryRadiusFactor !== config.radiusFactor) {
                     let baseFactor = config.radiusFactor
                     let secondaryFactor = config.secondaryRadiusFactor
                     if (secondaryFactor < baseFactor) {
-                        [baseFactor, secondaryFactor] = [secondaryFactor, baseFactor]
+                        ;[baseFactor, secondaryFactor] = [secondaryFactor, baseFactor]
                     }
-                    factor = (Math.cos(time / 1000 / 2) + 1) * (secondaryFactor - baseFactor) + baseFactor
+                    factor =
+                        (Math.cos(time / 1000 / 2) + 1) * (secondaryFactor - baseFactor) +
+                        baseFactor
                 }
                 radius = (canvas.width ** 2 + canvas.height ** 2) ** 0.5 * 0.55 * factor
             }
