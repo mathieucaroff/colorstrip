@@ -10,9 +10,7 @@
     "@mathieucaroff:registry": "https://npm.pkg.github.com"
   },
   "scripts": {
-    "build": "parcel build src/index.html --dist-dir public",
-    "mcabuild": "parcel build src/index.html --public-url colorstrip.d",
-    "buildlib": "parcel build",
+    "build": "parcel build",
     "dev": "parcel src/index.html"
   },
   "devDependencies": {

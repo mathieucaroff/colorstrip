@@ -1,4 +1,4 @@
-name: Node.js Package
+name: Release JS Library
 
 on:
   release:
@@ -17,6 +17,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com/
       - run: yarn install --immutable
-      - run: yarn publish
+      - run: yarn build
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
