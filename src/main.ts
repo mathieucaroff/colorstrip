@@ -1,17 +1,9 @@
-import { createColorStrip } from "./colorstrip"
-import { Theme, themeArray } from "./lib/palette"
+import { ColorStripConfig, createColorStrip } from "./colorstrip"
+import { themeArray } from "./lib/palette"
 import { resolveSearchAndHash } from "./lib/urlParameter"
 
-interface MainConfig {
-    diversityRatio: number
-    radiusFactor: number
-    secondaryRadiusFactor: number
+interface MainConfig extends ColorStripConfig {
     seed: number
-    paletteSeed: number
-    stripCircleSeed: number
-    speedFactor: number
-    stripCount: number
-    theme: Theme
     hue: number | undefined
 }
 
@@ -53,14 +45,10 @@ function main() {
     }
     resizeCanvas()
 
-    let strip
-    let setupColorStrip = () => {
-        strip = createColorStrip(canvas, {
-            ...config,
-            baseHue: config.hue,
-        })
-    }
-    setupColorStrip()
+    let strip = createColorStrip(canvas, {
+        ...config,
+        baseHue: config.hue,
+    })
 
     window.addEventListener("hashchange", () => {
         location.reload()
@@ -70,27 +58,7 @@ function main() {
         resizeCanvas()
     })
 
-    let lastTime = performance.now()
-    let animate = () => {
-        let time = performance.now()
-        strip.update((time - lastTime) * 0.02)
-        lastTime = time
-
-        let baseFactor = config.radiusFactor
-        let secondaryFactor = config.secondaryRadiusFactor
-        let factor =
-            (Math.cos(time / 1000 / 2) + 1) * (secondaryFactor - baseFactor) + config.radiusFactor
-
-        let radius = (canvas.width ** 2 + canvas.height ** 2) ** 0.5 * 0.55 * factor
-        strip.draw(radius)
-    }
-
-    let render = () => {
-        requestAnimationFrame(render)
-        animate()
-    }
-
-    render()
+    strip.play()
 }
 
 main()

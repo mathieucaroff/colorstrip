@@ -5,8 +5,6 @@ import { createPalette, PaletteConfig, Theme } from "./lib/palette"
 import { seedRandom } from "./lib/seedRandom"
 import { createStripCircle } from "./stripCircle"
 
-type RandomFunction = () => number
-
 export interface ColorStripConfig {
     stripCount: number
     speedFactor: number
@@ -20,6 +18,9 @@ export interface ColorStripConfig {
     // a function which produces numbers between 0 included and 1 excluded
     stripCircleSeed: number
     paletteSeed: number
+    // circle zoom factor
+    radiusFactor: number
+    secondaryRadiusFactor: number
     // baseHue -- between 0 and 360
     baseHue?: number
 }
@@ -40,7 +41,7 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
 
     let stripCircle = createStripCircle({ ...config, random: seedRandom(config.stripCircleSeed) })
 
-    let clear = () => {
+    let clearCanvas = () => {
         ctx.fillStyle = backgroundColor
         ctx.fillRect(0, 0, canvas.width, canvas.height)
     }
@@ -56,14 +57,39 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
         ctx.fill(region)
     }
 
-    clear()
+    clearCanvas()
+
+    let playing = false
+    let lastTime = performance.now()
+    const animate = () => {
+        if (playing) {
+            let time = performance.now()
+            me.update((time - lastTime) * 0.02)
+            lastTime = time
+            me.draw(time)
+            requestAnimationFrame(animate)
+        }
+    }
 
     let me = {
         update: (timeIncrement: number) => {
             stripCircle.update(timeIncrement)
         },
-        draw: (radius: number) => {
-            clear()
+        draw: (time: number, radius?: number) => {
+            if (radius === undefined) {
+                let factor = config.radiusFactor
+                if (config.secondaryRadiusFactor !== config.radiusFactor){
+                    let baseFactor = config.radiusFactor
+                    let secondaryFactor = config.secondaryRadiusFactor
+                    if (secondaryFactor < baseFactor) {
+                        [baseFactor, secondaryFactor] = [secondaryFactor, baseFactor]
+                    }
+                    factor = (Math.cos(time / 1000 / 2) + 1) * (secondaryFactor - baseFactor) + baseFactor
+                }
+                radius = (canvas.width ** 2 + canvas.height ** 2) ** 0.5 * 0.55 * factor
+            }
+
+            clearCanvas()
 
             stripCircle
                 .getPathList([canvas.width / 2, canvas.height / 2], radius)
@@ -71,6 +97,15 @@ export let createColorStrip = (canvas: HTMLCanvasElement, config: ColorStripConf
                     ctx.fillStyle = colorArray[index]
                     fillPath(path)
                 })
+        },
+        play: () => {
+            if (!playing) {
+                playing = true
+                animate()
+            }
+        },
+        pause: () => {
+            playing = false
         },
     }
 
