@@ -11,11 +11,18 @@ yarn install
 ## Running it in development mode
 
 ```sh
-yarn parcel page.html
+yarn dev
 ```
 
-## Build
+## Build a js library
 
 ```sh
-yarn parcel
+yarn buildlib
+```
+
+
+## Build an html file
+
+```sh
+yarn build
 ```
