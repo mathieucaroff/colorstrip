@@ -3,12 +3,21 @@
   "version": "1.0.0",
   "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
   "license": "MIT",
+  "source": "src/colorstrip.ts",
+  "main": "dist/main.js",
+  "types": "dist/types.d.ts",
+  "publishConfig": {
+    "@mathieucaroff:registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "parcel build src/index.html --dist-dir public",
     "mcabuild": "parcel build src/index.html --public-url colorstrip.d",
+    "buildlib": "parcel build",
     "dev": "parcel src/index.html"
   },
   "devDependencies": {
+    "@parcel/packager-ts": "2.12.0",
+    "@parcel/transformer-typescript-types": "2.12.0",
     "parcel": "^2.12.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.2"
