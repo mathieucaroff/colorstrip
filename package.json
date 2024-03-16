@@ -1,8 +1,13 @@
 {
-  "name": "colorstrip",
-  "version": "1.0.0",
+  "name": "@mathieucaroff/colorstrip",
+  "version": "1.0.1",
   "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
   "license": "MIT",
+  "homepage": "https://github.com/mathieucaroff/colorstrip",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieucaroff/colorstrip.git"
+  },
   "source": "src/colorstrip.ts",
   "main": "dist/main.js",
   "types": "dist/types.d.ts",
