@@ -5,19 +5,20 @@ on:
     types: [created]
 
 jobs:
-  publish-gpr:
+  publish-npm:
     runs-on: ubuntu-latest
     permissions:
-      packages: write
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
         with:
-          node-version: 20
-          registry-url: https://npm.pkg.github.com/
-      - run: yarn install --immutable
-      - run: yarn build
-      - run: npm publish
+          bun-version: latest
+      - run: bun install
+      - run: bun --cwd packages/library run build
+      - name: Publish to npm
+        working-directory: packages/library
+        run: npm publish --provenance
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NPM_CONFIG_PROVENANCE: true

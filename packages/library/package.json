@@ -1,0 +1,28 @@
+{
+  "name": "@mathieucaroff/colorstrip",
+  "version": "1.0.2",
+  "author": "Mathieu CAROFF <mathieu.caroff@free.fr>",
+  "license": "MIT",
+  "homepage": "https://github.com/mathieucaroff/colorstrip",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieucaroff/colorstrip.git"
+  },
+  "source": "src/colorstrip.ts",
+  "main": "src/colorstrip.ts",
+  "exports": {
+    ".": "./src/colorstrip.ts"
+  },
+  "scripts": {
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/packager-ts": "2.12.0",
+    "@parcel/transformer-typescript-types": "2.12.0",
+    "parcel": "^2.12.0",
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "seedrandom": "^3.0.5"
+  }
+}

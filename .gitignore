@@ -1,9 +1,12 @@
 /*/
 .*
 
+/packages/*/*/
+!/packages/*/src/
+
 !.editorconfig
 !.gitignore
 !.npmignore
 !.prettierrc
 !/.github/
-!/src/
+!/packages/

@@ -3,6 +3,24 @@
   "workspaces": {
     "": {
       "name": "@mathieucaroff/colorstrip",
+      "devDependencies": {
+        "prettier": "^3.2.5",
+      },
+    },
+    "packages/demo": {
+      "name": "colorstrip-demo",
+      "version": "1.0.0",
+      "dependencies": {
+        "@mathieucaroff/colorstrip": "workspace:*",
+      },
+      "devDependencies": {
+        "parcel": "^2.12.0",
+        "typescript": "^5.4.2",
+      },
+    },
+    "packages/library": {
+      "name": "@mathieucaroff/colorstrip",
+      "version": "1.0.2",
       "dependencies": {
         "seedrandom": "^3.0.5",
       },
@@ -10,7 +28,6 @@
         "@parcel/packager-ts": "2.12.0",
         "@parcel/transformer-typescript-types": "2.12.0",
         "parcel": "^2.12.0",
-        "prettier": "^3.2.5",
         "typescript": "^5.4.2",
       },
     },
@@ -31,6 +48,8 @@
     "@lmdb/lmdb-linux-x64": ["@lmdb/lmdb-linux-x64@2.8.5", "", { "os": "linux", "cpu": "x64" }, "sha512-Xkc8IUx9aEhP0zvgeKy7IQ3ReX2N8N1L0WPcQwnZweWmOuKfwpS3GRIYqLtK5za/w3E60zhFfNdS+3pBZPytqQ=="],
 
     "@lmdb/lmdb-win32-x64": ["@lmdb/lmdb-win32-x64@2.8.5", "", { "os": "win32", "cpu": "x64" }, "sha512-4wvrf5BgnR8RpogHhtpCPJMKBmvyZPhhUtEwMJbXh0ni2BucpfF07jlmyM11zRqQ2XIq6PbC2j7W7UCCcm1rRQ=="],
+
+    "@mathieucaroff/colorstrip": ["@mathieucaroff/colorstrip@workspace:packages/library"],
 
     "@mischnic/json-sourcemap": ["@mischnic/json-sourcemap@0.1.1", "", { "dependencies": { "@lezer/common": "^1.0.0", "@lezer/lr": "^1.0.0", "json5": "^2.2.1" } }, "sha512-iA7+tyVqfrATAIsIRWQG+a7ZLLD0VaOCKV2Wd/v4mqIU3J9c4jx9p7S0nw1XH3gJCKNBOOwACOPYYSUu9pgT+w=="],
 
@@ -257,6 +276,8 @@
     "color-convert": ["color-convert@2.0.1", "", { "dependencies": { "color-name": "~1.1.4" } }, "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="],
 
     "color-name": ["color-name@1.1.4", "", {}, "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="],
+
+    "colorstrip-demo": ["colorstrip-demo@workspace:packages/demo"],
 
     "commander": ["commander@12.1.0", "", {}, "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="],
 
