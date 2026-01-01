@@ -1,6 +1,7 @@
 /*/
 .*
 
+!/doc/
 /packages/*/*/
 !/packages/*/src/
 
